@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   GraduationCap, 
   Users, 
@@ -15,6 +16,7 @@ import {
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { path: "/", label: "Home", icon: GraduationCap },
@@ -62,12 +64,29 @@ const Navigation = () => {
 
           {/* User Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline" size="sm">
-              Sign In
-            </Button>
-            <Button size="sm" className="bg-primary hover:bg-primary-dark">
-              Join Network
-            </Button>
+            {user ? (
+              <>
+                <span className="text-sm text-muted-foreground">
+                  Welcome, {user.email}
+                </span>
+                <Button variant="outline" size="sm" onClick={signOut}>
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button variant="outline" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/auth">
+                  <Button size="sm" className="bg-primary hover:bg-primary-dark">
+                    Join Network
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -102,12 +121,29 @@ const Navigation = () => {
                 );
               })}
               <div className="pt-4 pb-2 space-y-2">
-                <Button variant="outline" className="w-full">
-                  Sign In
-                </Button>
-                <Button className="w-full bg-primary hover:bg-primary-dark">
-                  Join Network
-                </Button>
+                {user ? (
+                  <>
+                    <div className="px-3 py-2 text-sm text-muted-foreground">
+                      Welcome, {user.email}
+                    </div>
+                    <Button variant="outline" className="w-full" onClick={signOut}>
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" className="w-full">
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                      <Button className="w-full bg-primary hover:bg-primary-dark">
+                        Join Network
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
